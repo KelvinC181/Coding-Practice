@@ -66,14 +66,14 @@ def build_adj_dict(edges):
 
 def dijkstra(graph, start):
     dist = {start:0}
-    queue = [(start,0)]
+    queue = [(0,start)]
     while queue:
-        node,d = heapq.heappop(queue)
+        d,node = heapq.heappop(queue)
         for neighbor, weight in graph[node]:
             new_dist = d + weight
             if new_dist < dist.get(neighbor,float("inf")):
                 dist[neighbor] = new_dist
-                heapq.heappush(queue,(neighbor, new_dist))
+                heapq.heappush(queue,(new_dist, neighbor))
     return dist
 
 
