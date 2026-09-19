@@ -49,6 +49,8 @@ THINK ABOUT:
   - What if `edges` contains a duplicate edge between the same pair with a
     different weight — which one should count?
 """
+import heapq
+
 def build_adj_dict(edges):
     adj_dict = {}
     for a,b, weight in edges:
@@ -62,14 +64,37 @@ def build_adj_dict(edges):
             adj_dict[b].append((a,weight))
     return adj_dict
 
+def dijkstra(graph, start):
+    dist = {start:0}
+    queue = [(start,0)]
+    while queue:
+        node,d = heapq.heappop(queue)
+        for neighbor, weight in graph[node]:
+            new_dist = d + weight
+            if new_dist < dist.get(neighbor,float("inf")):
+                dist[neighbor] = new_dist
+                heapq.heappush(queue,(neighbor, new_dist))
+    return dist
+
+
 def shortest_latency(edges, start, target):
     # TODO: implement
-    raise NotImplementedError
+    adj_dict = build_adj_dict(edges)
+    if start not in adj_dict:
+            return None
+    latency_list = dijkstra(adj_dict,start)
+    return latency_list[target] if target in latency_list else None
 
 
 def reachable_within(edges, start, max_latency):
     # TODO: implement
-    raise NotImplementedError
+    adj_dict = build_adj_dict(edges)
+    latency_list = dijkstra(adj_dict,start)
+    reachable = set()
+    for node in latency_list:
+        if latency_list[node] <= max_latency:
+            reachable.add(node)
+    return reachable if reachable else None
 
 
 # ---------------------------------------------------------------------
